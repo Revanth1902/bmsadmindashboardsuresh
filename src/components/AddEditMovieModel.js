@@ -120,7 +120,7 @@ const AddEditMovieModal = ({ open, onClose, movie, onMovieSaved }) => {
 
   const handleSubmit = async () => {
     if (movie) {
-      await updateMovie(_id, formData);
+      await updateMovie(movie._id, formData);
     } else {
       await addMovie(formData);
     }
