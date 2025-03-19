@@ -1,45 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { fetchReports } from "../services/reportsService";
-import { Table, Button } from "react-bootstrap"; // Import React Bootstrap components
+import { Table } from "react-bootstrap"; // Import React Bootstrap components
 
 const ReportsPage = () => {
   const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const loadReports = async () => {
-      const reportsData = await fetchReports();
-      setReports(reportsData);
+      try {
+        const reportsData = await fetchReports();
+        // Check if reportsData is an array or an object and handle accordingly
+        if (Array.isArray(reportsData)) {
+          setReports(reportsData);
+        } else {
+          // Handle case if reportsData is not an array, e.g. handle error or display a message
+          setReports([reportsData]); // Wrap the object into an array (if it's a single object)
+        }
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
+      }
     };
     loadReports();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>; // Show loading indicator while data is being fetched
+  }
+
   return (
     <div className="container-fluid">
       <div className="row">
-        {/* Sidebar */}
-        {/* <div className="col-md-3 col-lg-2 bg-dark text-white p-4">
-          <h2 className="text-center mb-4">Dashboard</h2>
-          <ul className="list-unstyled">
-            <li>
-              <a
-                href="#"
-                className="text-white text-decoration-none hover-text-light"
-              >
-                Home
-              </a>
-            </li>
-            <li className="mt-3">
-              <a
-                href="#"
-                className="text-white text-decoration-none hover-text-light"
-              >
-                Reports
-              </a>
-            </li>
-          </ul>
-        </div> */}
-
-        {/* Main content */}
         <div className="col-md-9 col-lg-10 p-4">
           <h1 className="text-primary mb-4">Reports</h1>
 
@@ -54,14 +47,22 @@ const ReportsPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {reports.map((report) => (
-                  <tr key={report.report_id}>
-                    <td>{report.report_id}</td>
-                    <td>{report.type}</td>
-                    <td>{report.date}</td>
-                    <td>{report.data}</td>
+                {reports.length > 0 ? (
+                  reports.map((report, index) => (
+                    <tr key={index}>
+                      <td>{report.report_id || "N/A"}</td>
+                      <td>{report.type || "N/A"}</td>
+                      <td>{report.date || "N/A"}</td>
+                      <td>{report.data || "No data available"}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="text-center">
+                      No reports found
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </Table>
           </div>

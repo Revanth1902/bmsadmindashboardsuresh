@@ -2,16 +2,24 @@ import React, { useState, useEffect } from "react";
 import { fetchMovies, deleteMovie } from "../services/movieService";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import AddEditMovieModal from "../components/AddEditMovieModel";
+import { Spinner } from "react-bootstrap"; // For loader
 
 const MoviesPage = () => {
   const [movies, setMovies] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state for page data
 
   useEffect(() => {
     const loadMovies = async () => {
-      const moviesData = await fetchMovies();
-      setMovies(moviesData);
+      try {
+        const moviesData = await fetchMovies();
+        setMovies(moviesData);
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     loadMovies();
   }, []);
@@ -31,69 +39,89 @@ const MoviesPage = () => {
     setOpenModal(true);
   };
 
+  const handleImageError = (e) => {
+    e.target.src =
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoWcWg0E8pSjBNi0TtiZsqu8uD2PAr_K11DA&s"; // Set fallback image on error
+  };
+
   return (
-    <div className="movies-container">
-      <div className="movies-header">
-        <h1 className="text-center text-dark mb-4">Movies</h1>
-        <button onClick={handleAdd} className="btn btn-primary mb-4">
+    <div className="container mt-5">
+      <div className="text-center mb-4">
+        <h1 className="text-dark">Movies</h1>
+        <button onClick={handleAdd} className="btn btn-primary">
           <FaEdit className="mr-2" />
           Add New Movie
         </button>
       </div>
 
-      <div className="table-responsive">
-        <table className="table table-bordered table-striped">
-          <thead className="thead-dark">
-            <tr>
-              <th>Movie ID</th>
-              <th>Title</th>
-              <th>Genre</th>
-              <th>Director</th>
-              <th>Release Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {movies.map((movie) => (
-              <tr key={movie.movie_id}>
-                <td>{movie.movie_id}</td>
-                <td>
-                  <img src={movie.image_url} alt={movie.title} />
-                </td>
-                <td>{movie.title}</td>
-                <td>{movie.genre}</td>
-                <td>{movie.director}</td>
-
-                <td>
-                  {new Date(movie.release_date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </td>
-
-                <td>
-                  <button
-                    onClick={() => handleEdit(movie)}
-                    className="btn btn-warning mr-2"
-                  >
-                    <FaEdit className="mr-2" />
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(movie._id)}
-                    className="btn btn-danger"
-                  >
-                    <FaTrashAlt className="mr-2" />
-                    Delete
-                  </button>
-                </td>
+      {/* Loader while movies are being fetched */}
+      {loading ? (
+        <div className="d-flex justify-content-center my-5">
+          <Spinner animation="border" variant="primary" />
+        </div>
+      ) : (
+        <div className="table-responsive">
+          <table className="table table-bordered table-striped">
+            <thead className="thead-dark">
+              <tr>
+                <th>Movie ID</th>
+                <th>Poster</th>
+                <th>Title</th>
+                <th>Genre</th>
+                <th>Director</th>
+                <th>Release Date</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {movies.map((movie) => (
+                <tr key={movie.movie_id}>
+                  <td>{movie.movie_id}</td>
+                  <td className="text-center">
+                    <div className="d-flex justify-content-center align-items-center">
+                      <img
+                        src={
+                          movie.image_url ||
+                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoWcWg0E8pSjBNi0TtiZsqu8uD2PAr_K11DA&s"
+                        }
+                        alt={movie.title}
+                        onError={handleImageError} // Handle broken image
+                        className="movie-image"
+                      />
+                    </div>
+                  </td>
+                  <td>{movie.title}</td>
+                  <td>{movie.genre}</td>
+                  <td>{movie.director}</td>
+                  <td>
+                    {new Date(movie.release_date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </td>
+                  <td className="text-center">
+                    <button
+                      onClick={() => handleEdit(movie)}
+                      className="btn btn-warning mr-2"
+                    >
+                      <FaEdit /> Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(movie.movie_id)}
+                      className="btn btn-danger"
+                    >
+                      <FaTrashAlt /> Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
+      {/* Add/Edit Movie Modal */}
       {openModal && (
         <AddEditMovieModal
           open={openModal}

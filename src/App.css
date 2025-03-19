@@ -27,6 +27,25 @@
 .App-link {
   color: #61dafb;
 }
+/* Ensures consistent image sizing */
+.movie-image {
+  width: 120px; /* Set fixed width for all images */
+  height: 180px; /* Set fixed height for all images */
+  object-fit: cover; /* Ensures images cover the container without distortion */
+  border-radius: 8px; /* Optional: rounded corners for a clean look */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: shadow around the image */
+}
+
+/* Make sure the image is centered in its container */
+.table td {
+  text-align: center; /* Center align text in table cells */
+}
+
+/* Optional: Add hover effect to images */
+.table tbody tr:hover .movie-image {
+  transform: scale(1.05); /* Slight zoom on hover */
+  transition: transform 0.2s ease-in-out;
+}
 
 @keyframes App-logo-spin {
   from {
