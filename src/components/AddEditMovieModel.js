@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap"; // Importing React Bootstrap components
 import { addMovie, updateMovie } from "../services/movieService";
+import axios from "axios"; // Importing axios for Cloudinary API
 
 const AddEditMovieModal = ({ open, onClose, movie, onMovieSaved }) => {
   const [formData, setFormData] = useState({
@@ -42,6 +43,40 @@ const AddEditMovieModal = ({ open, onClose, movie, onMovieSaved }) => {
       });
     }
   }, [movie]);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({
+        ...formData,
+        image_url: file, // Store the file object in formData
+      });
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData({
+      ...formData,
+      image_url: "", // Reset image_url to clear the selected image
+    });
+  };
+
+  // Cloudinary upload function
+  const uploadImageToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "rpzsi4w0"); // Replace with your Cloudinary upload preset
+
+    try {
+      const res = await axios.post(
+        "https://api.cloudinary.com/v1_1/dz4egcyvd/image/upload", // Replace with your Cloudinary cloud name
+        formData
+      );
+      return res.data.secure_url; // Returning the Cloudinary image URL
+    } catch (err) {
+      console.error("Error uploading image to Cloudinary:", err);
+      return null;
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -119,13 +154,37 @@ const AddEditMovieModal = ({ open, onClose, movie, onMovieSaved }) => {
   };
 
   const handleSubmit = async () => {
-    if (movie) {
-      await updateMovie(movie._id, formData);
-    } else {
-      await addMovie(formData);
+    // If an image is selected and is a file object, upload it to Cloudinary
+    if (formData.image_url instanceof File) {
+      const uploadedImageUrl = await uploadImageToCloudinary(
+        formData.image_url
+      );
+      if (uploadedImageUrl) {
+        setFormData({ ...formData, image_url: uploadedImageUrl }); // Update image_url with the Cloudinary URL
+      } else {
+        // Handle the case where the image upload fails
+        alert("Image upload failed. Please try again.");
+        return;
+      }
     }
-    onMovieSaved();
-    onClose();
+
+    // Submit the form data
+    try {
+      if (movie) {
+        // Update existing movie
+        await updateMovie(movie._id, formData);
+      } else {
+        // Add new movie
+        await addMovie(formData);
+      }
+
+      onMovieSaved(); // Call the callback to refresh or update state
+      window.location.reload();
+      onClose(); // Close the modal
+    } catch (err) {
+      console.error("Error submitting movie:", err);
+      alert("Failed to submit movie. Please try again.");
+    }
   };
 
   return (
@@ -135,6 +194,62 @@ const AddEditMovieModal = ({ open, onClose, movie, onMovieSaved }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
+          {/* Other form fields */}
+
+          <Form.Group className="mb-3" controlId="formImageUrl">
+            <Form.Label>Image</Form.Label>
+            <Form.Control
+              type="file"
+              onChange={handleImageChange} // Handle file selection
+              required={!movie} // If it's an existing movie, image URL is optional
+            />
+
+            {formData.image_url && !(formData.image_url instanceof File) && (
+              <div className="image-preview">
+                <img
+                  src={formData.image_url}
+                  alt="Movie Preview"
+                  style={{
+                    width: "100%",
+                    maxHeight: "300px",
+                    objectFit: "cover",
+                  }}
+                />
+                <Button
+                  variant="danger"
+                  onClick={handleRemoveImage}
+                  style={{ marginTop: "10px" }}
+                >
+                  Remove Image
+                </Button>
+              </div>
+            )}
+
+            {formData.image_url instanceof File && (
+              <div className="image-preview">
+                <img
+                  src={URL.createObjectURL(formData.image_url)}
+                  alt="Image Preview"
+                  className="movie-image"
+                  style={{
+                    width: "120px", // Set fixed width for all images
+                    height: "180px", // Set fixed height for all images
+                    objectFit: "cover", // Ensures images cover the container without distortion
+                    borderRadius: "8px", // Optional: rounded corners for a clean look
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Optional: soft shadow for depth
+                  }}
+                />
+                <Button
+                  variant="danger"
+                  onClick={handleRemoveImage}
+                  style={{ marginTop: "10px" }}
+                >
+                  Remove Image
+                </Button>
+              </div>
+            )}
+          </Form.Group>
+
           <Form.Group className="mb-3" controlId="formTitle">
             <Form.Label>Title</Form.Label>
             <Form.Control
@@ -221,18 +336,6 @@ const AddEditMovieModal = ({ open, onClose, movie, onMovieSaved }) => {
               step="0.1"
               min="0"
               max="10"
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formImageUrl">
-            <Form.Label>Image URL</Form.Label>
-            <Form.Control
-              type="text"
-              name="image_url"
-              value={formData.image_url}
-              onChange={handleInputChange}
-              placeholder="Enter image URL"
               required
             />
           </Form.Group>
