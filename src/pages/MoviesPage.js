@@ -75,8 +75,8 @@ const MoviesPage = () => {
             </thead>
             <tbody>
               {movies.map((movie) => (
-                <tr key={movie.movie_id}>
-                  <td>{movie.movie_id}</td>
+                <tr key={movie._id}>
+                  <td>{movie._id}</td>
                   <td className="text-center">
                     <div className="d-flex justify-content-center align-items-center">
                       <img
