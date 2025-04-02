@@ -160,6 +160,7 @@ const TheatresPage = () => {
           <Table striped bordered hover responsive>
             <thead className="thead-dark">
               <tr>
+                <th>Id</th>
                 <th>Name</th>
                 <th>Location</th>
                 <th>Contact</th>
@@ -172,6 +173,7 @@ const TheatresPage = () => {
             <tbody>
               {theatres.map((theatre) => (
                 <tr key={theatre._id}>
+                  <td>{theatre._id}</td>
                   <td>{theatre.name}</td>
                   <td>
                     {theatre.location.city}, {theatre.location.state}

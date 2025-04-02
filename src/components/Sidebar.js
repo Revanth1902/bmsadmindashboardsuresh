@@ -8,6 +8,7 @@ import {
   FaCreditCard,
   FaFileAlt,
 } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 
 // Custom CSS for hover effects and smooth transitions
 import "./Sidebar.css";
@@ -22,6 +23,14 @@ const Sidebar = () => {
       </div>
 
       <div>
+        <NavLink
+          to="/searchbyid"
+          className="sidebar-link d-flex align-items-center mb-3"
+          activeClassName="active"
+        >
+          <FaSearch className="sidebar-icon me-3" />
+          Search by ID
+        </NavLink>
         <NavLink
           to="/users"
           className="sidebar-link d-flex align-items-center mb-3"

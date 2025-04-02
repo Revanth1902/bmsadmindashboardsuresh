@@ -13,7 +13,7 @@ import ReportsPage from "./pages/ReportsPage";
 import MoviesPage from "./pages/MoviesPage";
 import PaymentsPage from "./pages/PaymentsPage";
 import Sidebar from "./components/Sidebar";
-
+import SearchById from "./pages/SerachbyId";
 const theme = createTheme(); // Your theme configuration
 
 function App() {
@@ -29,6 +29,7 @@ function App() {
           <div style={{ marginLeft: 240, padding: 20, width: "100%" }}>
             {/* Define routes and the pages to be displayed */}
             <Routes>
+              <Route path="/searchbyid" element={<SearchById />} />
               <Route path="/users" element={<UsersPage />} />
               <Route path="/theatres" element={<TheatresPage />} />
               <Route path="/bookings" element={<BookingsPage />} />
