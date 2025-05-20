@@ -38,17 +38,24 @@
   color: #ecf0f1;
 }
 
-/* Smooth transition for the Sidebar */
+/* Sidebar Styles */
 .sidebar {
-  height: 100vh;
-  width: 250px;
+  display: flex;
+  flex-direction: column;
+  background-color: #18546b; /* Dark background */
+  color: white; /* Text color */
+  padding: 20px;
   position: fixed;
   top: 0;
   left: 0;
-  transition: all 0.3s ease;
+  height: 100vh; /* Full height */
+  width: 250px; /* Sidebar width */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional box shadow for depth */
 }
 
-/* Change the background of the sidebar when hovering */
-.sidebar:hover {
-  background-color: #2c3e50;
+/* If you need to adjust the sidebar for responsiveness */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px; /* Adjust width for smaller screens */
+  }
 }

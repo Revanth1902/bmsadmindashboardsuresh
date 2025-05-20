@@ -26,7 +26,10 @@ function App() {
           <Sidebar />
 
           {/* Main content area */}
-          <div style={{ marginLeft: 240, padding: 20, width: "100%" }}>
+          <div
+            className="thebodying"
+            style={{ marginLeft: 240, padding: 20, width: "100%" }}
+          >
             {/* Define routes and the pages to be displayed */}
             <Routes>
               <Route path="/searchbyid" element={<SearchById />} />

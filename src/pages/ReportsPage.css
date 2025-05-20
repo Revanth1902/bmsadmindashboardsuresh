@@ -1,0 +1,16 @@
+.reports-page {
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.reports-page h5 {
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+canvas {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}

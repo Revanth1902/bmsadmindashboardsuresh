@@ -15,7 +15,7 @@ import "./Sidebar.css";
 
 const Sidebar = () => {
   return (
-    <div className="d-flex flex-column sidebar bg-dark text-white p-4 position-fixed">
+    <div id="thehuman" className="sidebar">
       <div className="mb-4">
         <div className="sidebar-title text-center fs-4 fw-bold">
           Admin Panel
@@ -24,12 +24,21 @@ const Sidebar = () => {
 
       <div>
         <NavLink
-          to="/searchbyid"
+          to="/movies"
           className="sidebar-link d-flex align-items-center mb-3"
           activeClassName="active"
         >
-          <FaSearch className="sidebar-icon me-3" />
-          Search by ID
+          <FaFilm className="sidebar-icon me-3" />
+          Movies
+        </NavLink>
+
+        <NavLink
+          to="/theatres"
+          className="sidebar-link d-flex align-items-center mb-3"
+          activeClassName="active"
+        >
+          <FaTheaterMasks className="sidebar-icon me-3" />
+          Theatres
         </NavLink>
         <NavLink
           to="/users"
@@ -41,23 +50,21 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink
-          to="/theatres"
+          to="/reports"
           className="sidebar-link d-flex align-items-center mb-3"
           activeClassName="active"
         >
-          <FaTheaterMasks className="sidebar-icon me-3" />
-          Theatres
+          <FaFileAlt className="sidebar-icon me-3" />
+          Reports
         </NavLink>
-
         <NavLink
-          to="/movies"
+          to="/searchbyid"
           className="sidebar-link d-flex align-items-center mb-3"
           activeClassName="active"
         >
-          <FaFilm className="sidebar-icon me-3" />
-          Movies
+          <FaSearch className="sidebar-icon me-3" />
+          Search by ID
         </NavLink>
-
         <NavLink
           to="/bookings"
           className="sidebar-link d-flex align-items-center mb-3"
@@ -66,7 +73,6 @@ const Sidebar = () => {
           <FaHome className="sidebar-icon me-3" />
           Bookings
         </NavLink>
-
         <NavLink
           to="/payments"
           className="sidebar-link d-flex align-items-center mb-3"
@@ -74,15 +80,6 @@ const Sidebar = () => {
         >
           <FaCreditCard className="sidebar-icon me-3" />
           Payments
-        </NavLink>
-
-        <NavLink
-          to="/reports"
-          className="sidebar-link d-flex align-items-center mb-3"
-          activeClassName="active"
-        >
-          <FaFileAlt className="sidebar-icon me-3" />
-          Reports
         </NavLink>
       </div>
     </div>

@@ -1,9 +1,7 @@
 .App {
   text-align: center;
 }
-body {
-  background-color: #61dafb;
-}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -51,6 +49,10 @@ body {
 
 .App-link {
   color: #61dafb;
+}
+
+table {
+  background-color: #345454 !important;
 }
 /* Ensures consistent image sizing */
 .movie-image {

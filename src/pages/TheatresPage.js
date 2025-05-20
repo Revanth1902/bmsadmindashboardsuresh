@@ -1,9 +1,22 @@
 import React, { useState, useEffect } from "react";
+import { Bar, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+import "./TheatrePage.css";
 import {
   fetchTheatres,
   deleteTheatre,
   addTheatre,
 } from "../services/theatresService";
+import MovieLoader from "./MovieLoader";
 import {
   Button,
   Table,
@@ -136,65 +149,154 @@ const TheatresPage = () => {
       console.error("Error adding theatre:", error);
     }
   };
+  // Group by status
+  const statusCounts = theatres.reduce((acc, theatre) => {
+    acc[theatre.status] = (acc[theatre.status] || 0) + 1;
+    return acc;
+  }, {});
+
+  const statusLabels = Object.keys(statusCounts);
+  const statusData = Object.values(statusCounts);
+
+  // Group by city
+  const cityCounts = theatres.reduce((acc, theatre) => {
+    acc[theatre.location.city] = (acc[theatre.location.city] || 0) + 1;
+    return acc;
+  }, {});
+
+  const cityLabels = Object.keys(cityCounts);
+  const cityData = Object.values(cityCounts);
+
+  const statusBarData = {
+    labels: statusLabels,
+    datasets: [
+      {
+        label: "Number of Theatres",
+        data: statusData,
+        backgroundColor: ["#4caf50", "#f44336", "#ff9800"],
+      },
+    ],
+  };
+
+  const cityPieData = {
+    labels: cityLabels,
+    datasets: [
+      {
+        label: "Theatres by City",
+        data: cityData,
+        backgroundColor: [
+          "#3f51b5",
+          "#9c27b0",
+          "#00bcd4",
+          "#ffc107",
+          "#8bc34a",
+          "#e91e63",
+        ],
+      },
+    ],
+  };
 
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4 text-primary">Theatres</h1>
 
       {loading ? (
-        <div className="text-center">
-          <Spinner animation="border" variant="primary" />{" "}
-          {/* Bootstrap spinner */}
+        <div style={{ padding: "2rem" }}>
+          <MovieLoader />
         </div>
       ) : error ? (
         <Alert variant="danger">{error}</Alert> // Error handling if fetch fails
       ) : (
         <>
+          <div className="header-action-bar">
+            <h2 className="text-primary">🎭 Theatre Management</h2>
+            <Button
+              variant="success"
+              onClick={handleAddTheatre}
+              className="add-btn"
+            >
+              <FaPlus /> Add Theatre
+            </Button>
+          </div>
+
           <Row className="mb-4">
-            <Col>
-              <Button variant="primary" onClick={handleAddTheatre}>
-                <FaPlus className="mr-2" /> Add Theatre
-              </Button>
+            <Col md={4}>
+              <div className="stats-wrapper text-center">
+                <h5>Total Theatres</h5>
+                <h3>{theatres.length}</h3>
+              </div>
+            </Col>
+            <Col md={4}>
+              <div className="stats-wrapper">
+                <h5 className="text-center">📊 Theatres by Status</h5>
+                <Bar
+                  data={statusBarData}
+                  options={{
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } },
+                    maintainAspectRatio: false,
+                  }}
+                  className="chart-canvas"
+                />
+              </div>
+            </Col>
+            <Col md={4}>
+              <div className="stats-wrapper">
+                <h5 className="text-center">🌍 Distribution by City</h5>
+                <Pie
+                  data={cityPieData}
+                  options={{
+                    responsive: true,
+                    plugins: { legend: { position: "bottom" } },
+                    maintainAspectRatio: false,
+                  }}
+                  className="chart-canvas"
+                />
+              </div>
             </Col>
           </Row>
-          <Table striped bordered hover responsive>
-            <thead className="thead-dark">
-              <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Location</th>
-                <th>Contact</th>
-                <th>Screens</th>
-                <th>Amenities</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {theatres.map((theatre) => (
-                <tr key={theatre._id}>
-                  <td>{theatre._id}</td>
-                  <td>{theatre.name}</td>
-                  <td>
-                    {theatre.location.city}, {theatre.location.state}
-                  </td>
-                  <td>{theatre.contact_info.phone}</td>
-                  <td>{theatre.total_screens} Screens</td>
-                  <td>{theatre.amenities.join(", ")}</td>
-                  <td>{theatre.status}</td>
-                  <td>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleDelete(theatre._id)}
-                    >
-                      <FaTrashAlt /> Delete
-                    </Button>
-                  </td>
+
+          <div className="table-wrapper">
+            <Table striped bordered hover responsive>
+              <thead className="thead-dark">
+                <tr>
+                  <th>Id</th>
+                  <th>Name</th>
+                  <th>Location</th>
+                  <th>Contact</th>
+                  <th>Screens</th>
+                  <th>Amenities</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {theatres.map((theatre) => (
+                  <tr key={theatre._id}>
+                    <td>{theatre._id}</td>
+                    <td>{theatre.name}</td>
+                    <td>
+                      {theatre.location.city}, {theatre.location.state}
+                    </td>
+                    <td>{theatre.contact_info.phone}</td>
+                    <td>{theatre.total_screens} Screens</td>
+                    <td>{theatre.amenities.join(", ")}</td>
+                    <td>{theatre.status}</td>
+                    <td>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => handleDelete(theatre._id)}
+                      >
+                        <FaTrashAlt /> Delete
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </>
       )}
 

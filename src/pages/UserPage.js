@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchUsers, deleteUser } from "../services/userService";
 import { Button, Table, Spinner } from "react-bootstrap"; // Import Bootstrap components
 import { FaTrashAlt } from "react-icons/fa"; // Trash icon for delete action
-
+import MovieLoader from "./MovieLoader";
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true); // New loading state
@@ -31,9 +31,8 @@ const UsersPage = () => {
       <h1 className="text-center mb-4 text-primary">Users</h1>
 
       {loading ? (
-        <div className="text-center">
-          <Spinner animation="border" variant="primary" />{" "}
-          {/* Bootstrap spinner */}
+        <div style={{ padding: "2rem" }}>
+          <MovieLoader />
         </div>
       ) : (
         <Table striped bordered hover responsive>

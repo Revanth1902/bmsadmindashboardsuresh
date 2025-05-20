@@ -1,0 +1,101 @@
+/* Light Theme Styles */
+
+@import url("https://fonts.googleapis.com/css2?family=Share+Tech&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Share+Tech&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Share+Tech&display=swap");
+body {
+  font-family: "Exo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container for the Search Component */
+.search-container {
+  font-family: "Exo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Form Fields */
+.form-container {
+  margin-bottom: 15px;
+}
+
+/* Input Field Styling */
+.input-field {
+  background-color: #fafafa;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Select Field Styling */
+.select-field {
+  background-color: #fafafa;
+  color: #333;
+}
+
+/* Button Styling */
+.search-button {
+  width: 100%;
+  background-color: #1976d2;
+  color: white;
+}
+
+/* Loading Container */
+.loading-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Error Alert Styling */
+.error-alert {
+  margin-top: 20px;
+  color: red;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table,
+th,
+td {
+  border: 1px solid #ddd;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: #1976d2;
+  color: white;
+}
+
+td {
+  background-color: #fafafa;
+}
